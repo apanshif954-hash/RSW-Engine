@@ -1,24 +1,27 @@
-import random
+import requests
+import time
 
-def start_game():
-    secret_number = random.randint(1, 20)
-    attempts = 0
-    
-    print("--- NUMBER GUESSING GAME ---")
-    print("ഞാൻ 1 മുതൽ 20 വരെ ഉള്ള ഒരു നമ്പർ വിചാരിച്ചിട്ടുണ്ട്. അത് ഏതാണെന്ന് പറയാമോ?")
+def get_live_price(coin_id):
+    try:
+        url = f"https://api.coingecko.com/api/v3/simple/price?ids={coin_id}&vs_currencies=usd"
+        data = requests.get(url).json()
+        return data[coin_id]['usd']
+    except:
+        return "Price not found"
 
-    while True:
-        guess = int(input("നിങ്ങളുടെ ഊഹം ടൈപ്പ് ചെയ്യൂ: "))
-        attempts += 1
+print("\n--- $RSW ENGINE INITIALIZING ---")
+time.sleep(1)
 
-        if guess < secret_number:
-            print("അല്പം കൂടി വലിയ നമ്പർ നോക്കൂ..")
-        elif guess > secret_number:
-            print("അല്പം കൂടി ചെറിയ നമ്പർ നോക്കൂ..")
-        else:
-            print(f"അടിപൊളി! {attempts} വട്ടം ശ്രമിച്ചപ്പോൾ നിങ്ങൾ ശരിയായ നമ്പർ കണ്ടെത്തി!")
-            break
+# സൊലാനയുടെ ലൈവ് വില നോക്കുന്നു
+sol_price = get_live_price('solana')
+print(f"Current SOL Price: ${sol_price}")
 
-start_game()
-thon game.py
+if isinstance(sol_price, (int, float)) and sol_price > 145:
+    print("Market Status: BULLISH 🚀")
+    print("Welcome to the $RSW Project, Alpha.")
+else:
+    print("Market Status: ACCUMULATING 💎")
+
+print("--------------------------------\n")
+
 

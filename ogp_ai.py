@@ -7,24 +7,28 @@ GREEN = '\033[92m'
 BLUE = '\033[94m'
 YELLOW = '\033[93m'
 RED = '\033[91m'
+CYAN = '\033[96m'
 BOLD = '\033[1m'
 END = '\033[0m'
 
 BAL_FILE = "balance.txt"
+RSW_PRICE = 4.25  
+SOL_PRICE = 12000.0 # ഒരു സോളാനയുടെ വില ഏകദേശം ₹12,000
 
-# ബാലൻസ് ഫയലിൽ നിന്ന് വായിക്കാനുള്ള ഫങ്ക്ഷൻ
 def load_balance():
     if os.path.exists(BAL_FILE):
-        with open(BAL_FILE, "r") as f:
-            return float(f.read())
-    return 7182.0  # ഫയൽ ഇല്ലെങ്കിൽ നിന്റെ ഇപ്പോഴത്തെ ബാലൻസിൽ നിന്ന് തുടങ്ങും
+        try:
+            with open(BAL_FILE, "r") as f:
+                return float(f.read())
+        except: return 10885.0
+    return 10885.0
 
-# ബാലൻസ് ഫയലിലേക്ക് സേവ് ചെയ്യാനുള്ള ഫങ്ക്ഷൻ
 def save_balance(bal):
     with open(BAL_FILE, "w") as f:
         f.write(str(bal))
 
 RSW_BALANCE = load_balance()
+SOL_BALANCE = 0.0 # പുതിയ കോയിൻ
 WALET_ID = "RSW_vX98_OGP_ADEP"
 
 try:
@@ -32,42 +36,45 @@ try:
         os.system('clear')
         
         # RANK SYSTEM
-        if RSW_BALANCE < 2000:
-            RANK = f"{RED}BRONZE MINER{END}"
-        elif RSW_BALANCE < 5000:
-            RANK = f"{YELLOW}SILVER MINER{END}"
-        elif RSW_BALANCE < 10000:
-            RANK = f"{BLUE}GOLD MINER{END}"
+        if RSW_BALANCE < 10000:
+            RANK = f"{YELLOW}GOLD MINER{END}"
+        elif RSW_BALANCE < 50000:
+            RANK = f"{CYAN}PLATINUM EXTRACTOR{END}"
         else:
             RANK = f"{GREEN}{BOLD}SIGMA DEVELOPER 🗿{END}"
 
+        inr_value = (RSW_BALANCE * RSW_PRICE) + (SOL_BALANCE * SOL_PRICE)
+
         print(f"{BLUE}====================================={END}")
-        print(f"{BLUE}{BOLD}      OGP AI (ADEP) - RSW ENGINE     {END}")
+        print(f"{BLUE}{BOLD}     RSW & SOL MULTI-ENGINE v3.0     {END}")
         print(f"{BLUE}====================================={END}")
         
-        print(f"\n{BOLD}[SYSTEM STATUS]{END}")
-        print(f">> Wallet ID: {YELLOW}{WALET_ID}{END}")
-        print(f">> Rank: {RANK}")
-        print(f">> Data Saving: {GREEN}ENABLED ✅{END}")
+        print(f"\n{BOLD}[PROFILE]{END} >> {RANK}")
+        print(f">> Wallet: {YELLOW}{WALET_ID}{END}")
         
-        print(f"\n{BOLD}[YOUR ASSETS]{END}")
-        print(f">> RSW Balance: {GREEN}{BOLD}{round(RSW_BALANCE, 2)} RSW{END}")
+        print(f"\n{BOLD}[CRYPTO ASSETS]{END}")
+        print(f">> {GREEN}RSW Balance:{END} {BOLD}{round(RSW_BALANCE, 2)} RSW{END}")
+        print(f">> {CYAN}SOL Balance:{END} {BOLD}{round(SOL_BALANCE, 4)} SOL{END}")
+        print(f">> Total Value: {YELLOW}{BOLD}₹{round(inr_value, 2)}{END}")
         
-        # MINING
-        mining_speed = random.uniform(5.0, 25.0)
-        RSW_BALANCE += mining_speed
+        # MINING LOGIC
+        rsw_speed = random.uniform(10.0, 35.0)
+        sol_speed = random.uniform(0.0001, 0.0005) # സോളാന പതുക്കെ മൈൻ ചെയ്യും (വില കൂടുതലായതുകൊണ്ട്)
         
-        # ഓരോ തവണയും ഫയലിലേക്ക് സേവ് ചെയ്യുന്നു
+        RSW_BALANCE += rsw_speed
+        SOL_BALANCE += sol_speed
         save_balance(RSW_BALANCE)
         
-        print(f"\n{BOLD}[MINING LIVE]{END}")
-        print(f">> Speed: {BLUE}{round(mining_speed, 2)} RSW/sec{END}")
+        print(f"\n{BOLD}[LIVE MINING]{END}")
+        print(f">> RSW Speed: {BLUE}{round(rsw_speed, 2)} RSW/sec{END}")
+        print(f">> SOL Speed: {CYAN}{round(sol_speed, 6)} SOL/sec{END}")
         
         print(f"\n{BLUE}-------------------------------------{END}")
-        print(f"Updating... {YELLOW}(CTRL+C to Stop & Save){END}")
+        print(f"Updating... {YELLOW}(CTRL+C to Save & Exit){END}")
         
         time.sleep(1)
 
 except KeyboardInterrupt:
-    print(f"\n{YELLOW}Stopping... Progress Saved Successfully!{END}")
+    save_balance(RSW_BALANCE)
+    print(f"\n{YELLOW}Data Saved! See you, SIGMA!{END}")
 
